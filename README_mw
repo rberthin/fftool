@@ -5,4 +5,4 @@ in file il.ff:
 * lj potential and intramolecular potential are in other units than u.a. 
 	!! (need to add the conversion to u.a.) !!
 * need to udpate the data file to the last version of mw
-
+* add constraint/harmonic intra
