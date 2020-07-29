@@ -30,7 +30,7 @@ kCal = 4.184                            # kJ
 eV = 96.485                             # kJ/mol
 #RB_CHANGE
 bohr = 0.529177                         
-kJmol2ua = 3.8e-04
+kJmol2au = 3.8e-04
 deg2rad = 0.0174533
 # --------------------------------------
 
@@ -2088,22 +2088,24 @@ class system(object):
                  
                  for bd in sp.bond:
                      f.write('    harmonic bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
-                             name1[bd.i], name1[bd.j], bd.par[1], bd.par[0]))
+                             name1[bd.i], name1[bd.j], bd.par[1]*2*kJmol2au, bd.par[0]/bohr))
                  f.write('\n')
                  
                  for an in sp.angle:
                      f.write('    harmonic angle  {0:4s}  {1:4s}  {2:4s}  {3}  {4}\n'.format(
-                             name1[an.j], name1[an.i], name1[an.k], an.par[1], an.par[0]))
+                             name1[an.j], name1[an.i], name1[an.k], an.par[1]*2*kJmol2au, an.par[0]*deg2rad))
                  f.write('\n')
 
                  for dh in sp.dihed:
                      f.write("    dihedral {0:4s} {1:4s} {2:4s} {3:4s}  {4}  {5}  {6}  {7}\n".format(
-                            name1[dh.i], name1[dh.j], name1[dh.k], name1[dh.l], dh.par[0], dh.par[1], dh.par[2], dh.par[3]))
+                            name1[dh.i], name1[dh.j], name1[dh.k], name1[dh.l], dh.par[0]*kJmol2au, 
+                            dh.par[1]*kJmol2au, dh.par[2]*kJmol2au, dh.par[3]*kJmol2au))
                  f.write('\n')
                
                  for di in sp.dimpr:
                      f.write("    improper {0:4s} {1:4s} {2:4s} {3:4s}  {4}  {5}  {6}  {7}\n".format(
-                            name1[di.i], name1[di.j], name1[di.k], name1[di.l], di.par[0], di.par[1], di.par[2], di.par[3]))
+                            name1[di.i], name1[di.j], name1[di.k], name1[di.l], di.par[0]*kJmol2au, 
+                            di.par[1]*kJmol2au, di.par[2]*kJmol2au, di.par[3]*kJmol2au))
                  f.write('\n')
         
             f.write('interactions\n')
