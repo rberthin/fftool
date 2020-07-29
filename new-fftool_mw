@@ -2053,21 +2053,19 @@ class system(object):
             for sp in self.spec:
                  f.write("#{0}\n\n".format(sp.name))
                  for at in sp.atom:
+                     print(at.name)
                      f.write("  species_type\n")
                      f.write("    name {0}\n".format(at.name))
                      f.write("    count {0}\n".format(sp.nmol))
                      f.write("    charge point {0}\n".format(at.q))
                      f.write("    masse {0}\n".format(at.m))
-                     ispol = False
                      if at.pot == 'lj':
                          if at.par[2]!=0:
-                            ispol = True 
                             f.write('    polarizability {0}\n\n'.format(at.par[2]))
                          else:
                              f.write('\n')
                      elif at.pot == 'ft':
                          if at.par[6] !=0:
-                            ispol = True
                             f.write('    polarizability {0}\n\n'.format(at.par[6]))
                          else:
                              f.write('\n')
@@ -2134,9 +2132,17 @@ class system(object):
             f.write('\n')
             f.write('damping\n')
             if at.pot == 'ft':
-                for nb in self.vdw:
-                    f.write("     tt_pair  {0:4s}   {1:4s}     2.0000000000000000        4"
-                                   "       1.0000000000000000\n".format(nb.i, nb.j))
+                for at1 in sp.atom:
+                    for at2 in sp.atom:
+                        if at2.par[6]!=0:
+                            f.write("     tt_pair  {0:4s}   {1:4s}     2.0000000000000000        4"
+                                    "       1.0000000000000000\n".format(at1.name, at2.name))
+            if at.pot == 'lj':
+                for at1 in sp.atom:
+                    for at2 in sp.atom:
+                        if at2.par[2]!=0:
+                            f.write("     tt_pair  {0:4s}   {1:4s}     2.0000000000000000        4"
+                                    "       1.0000000000000000\n".format(at1.name, at2.name))
             f.write('\n')
             f.write('output\n')
             f.write(' default 1\n')
