@@ -28,7 +28,10 @@ AngleTol = 15.0                         # degrees
 
 kCal = 4.184                            # kJ
 eV = 96.485                             # kJ/mol
-bohr = 0.529177
+#RB_CHANGE
+bohr = 0.529177                         
+kJmol2ua = 3.8e-04
+deg2rad = 0.0174533
 # --------------------------------------
 
 atomic_wt = {'H': 1.008, 'Li': 6.941, 'B': 10.811, 'C': 12.011,
