@@ -1,0 +1,8 @@
+in file il.ff: 
+
+* you can add fumi-tosi potential (keyword ft, parameters in u.a.)
+* last column correspond to atomic polarizability (with lj and ft)
+* lj potential and intramolecular potential are in other units than u.a. 
+	!! (need to add the conversion to u.a.) !!
+* need to udpate the data file to the last version of mw
+
