@@ -2056,7 +2056,6 @@ class system(object):
             for sp in self.spec:
                  f.write("#{0}\n\n".format(sp.name))
                  for at in sp.atom:
-                     print(at.name)
                      f.write("  species_type\n")
                      f.write("    name {0}\n".format(at.name))
                      f.write("    count {0}\n".format(sp.nmol))
@@ -2064,12 +2063,12 @@ class system(object):
                      f.write("    masse {0}\n".format(at.m))
                      if at.pot == 'lj':
                          if at.par[2]!=0:
-                            f.write('    polarizability {0}\n\n'.format(at.par[2]))
+                            f.write('    polarizability {0}\n\n'.format(at.par[2]/(bohr**3)))
                          else:
                              f.write('\n')
                      elif at.pot == 'ft':
                          if at.par[6] !=0:
-                            f.write('    polarizability {0}\n\n'.format(at.par[6]))
+                            f.write('    polarizability {0}\n\n'.format(at.par[6]/(bohr**3)))
                          else:
                              f.write('\n')
             f.write('#dipoles_minimization cg 1.0e-06 100\n\n')
@@ -2122,7 +2121,8 @@ class system(object):
                 f.write('     #lj_3D_tail_correction\n')
                 for nb in self.vdw:
                     if nb.i == nb.j : 
-                       f.write("     lj_pair  {0:4s} {1:4s}  {2}   {3}\n".format(nb.i, nb.j, nb.par[1], nb.par[0]))
+                       f.write("     lj_pair  {0:4s} {1:4s}  {2}   {3}\n".format(nb.i, nb.j, 
+                                nb.par[1]*kJmol2au, nb.par[0]/bohr))
                 f.write('     lj_rule Mixing\n')
             
             elif at.pot == 'ft':
@@ -2132,7 +2132,8 @@ class system(object):
                 for nb in self.vdw:
                     if nb.i == nb.j :
                        f.write("     tf_pair  {0:4s} {1:4s}  {2}  {3}  {4}  {5}  {6}  {7}\n".format(
-                           nb.i, nb.j, nb.par[0], nb.par[1], nb.par[2], nb.par[3], nb.par[4], nb.par[5]))
+                           nb.i, nb.j, nb.par[0]*bohr, nb.par[1]*kJmol2au, nb.par[2]*kJmol2au*bohr*1e-06, 
+                           nb.par[3]*kJmol2au*bohr*1e-08, nb.par[4]*bohr, nb.par[5]*bohr))
                 f.write('     ft_rule Mixing\n')
             f.write('\n')
             f.write('damping\n')

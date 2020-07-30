@@ -1,10 +1,9 @@
 in file il.ff: 
 
 * you can add fumi-tosi potential (keyword ft, parameters in kJ/mol)
-* last column correspond to atomic polarizability (with lj and ft)
-* lj potential and intramolecular potential are in other units than u.a. 
-	!! (need to add the conversion to u.a. for lj potential) !!
+* last column correspond to atomic polarizability in A3 (with lj and ft).
+	if no pol put 0.
+* potentials parameters are in kJ/mol, A, deg 
 
 * need to udpate the data file to the last version of mw
 * add constraint/harmonic intra
-* for polarizability : if last column=null than polarizability = 0
