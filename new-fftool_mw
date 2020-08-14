@@ -2161,9 +2161,8 @@ class system(object):
             for sp in self.spec:
                 tot_atom = tot_atom + (sp.nmol*len(sp.atom))
 
-            f.write('num_species                      '+ str(tot_atom)+'\n')
-            f.write('num_electrode_species              0\n')
-            f.write('thermostat_chain_length            5\n')
+            f.write('num_atoms                      '+ str(tot_atom)+'\n')
+            f.write('num_electrode_atoms              0\n')
             f.write('# box\n')
             f.write(' {0}  {1}  {2}\n'.format(self.box.lx/bohr, self.box.ly/bohr, self.box.lz/bohr))
             f.write(' # coordinates :      {0} species - step  0\n'.format(tot_atom))
