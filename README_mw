@@ -4,5 +4,3 @@ in file il.ff:
 * last column correspond to atomic polarizability in A3 (with lj and ft).
 	if no pol put 0.
 
-* need to udpate the data file to the last version of mw
-* add constraint/harmonic intra

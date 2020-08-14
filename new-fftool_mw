@@ -2084,12 +2084,17 @@ class system(object):
                      f.write("{0} ".format(at.name))
                      name1.append(at.name)
                  f.write('\n\n')
-                 
+         
                  for bd in sp.bond:
-                     f.write('    harmonic bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
-                             name1[bd.i], name1[bd.j], bd.par[1]*2*kJmol2au, bd.par[0]/bohr))
-                 f.write('\n')
-                 
+                     if bd.pot == 'harm':
+                        f.write('    harmonic bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
+                                name1[bd.i], name1[bd.j], bd.par[1]*2*kJmol2au, bd.par[0]/bohr))
+                        f.write('\n')
+                     elif bd.pot == 'cons':
+                        f.write('    constraint  {0:4s}  {1:4s}  {2}  \n'.format(
+                                name1[bd.i], name1[bd.j], bd.par[0]/bohr))
+                        f.write('\n')
+
                  for an in sp.angle:
                      f.write('    harmonic angle  {0:4s}  {1:4s}  {2:4s}  {3}  {4}\n'.format(
                              name1[an.j], name1[an.i], name1[an.k], an.par[1]*2*kJmol2au, an.par[0]*deg2rad))
