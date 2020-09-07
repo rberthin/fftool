@@ -2060,7 +2060,7 @@ class system(object):
                      f.write("    name {0}\n".format(at.name))
                      f.write("    count {0}\n".format(sp.nmol))
                      f.write("    charge point {0}\n".format(at.q))
-                     f.write("    masse {0}\n".format(at.m))
+                     f.write("    mass {0}\n".format(at.m))
                      if at.pot == 'lj':
                          if at.par[2]!=0:
                             f.write('    polarizability {0}\n\n'.format(at.par[2]/(bohr**3)))
@@ -2088,7 +2088,7 @@ class system(object):
                  for bd in sp.bond:
                      if bd.pot == 'harm':
                         f.write('    harmonic bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
-                                name1[bd.i], name1[bd.j], bd.par[1]*0.5*kJmol2au, bd.par[0]/bohr))
+                                name1[bd.i], name1[bd.j], bd.par[1]*0.5*kJmol2au*bohr**2, bd.par[0]/bohr))
                         f.write('\n')
                      elif bd.pot == 'cons':
                         f.write('    constraint  {0:4s}  {1:4s}  {2}  \n'.format(
