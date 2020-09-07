@@ -2172,12 +2172,20 @@ class system(object):
             f.write(' {0}  {1}  {2}\n'.format(self.box.lx/bohr, self.box.ly/bohr, self.box.lz/bohr))
             f.write(' # coordinates :      {0} species - step  0\n'.format(tot_atom))
             i = 0
+            u = 0
+            y = 0
             for sp in self.spec:
+                i += y
                 for at in sp.atom:
+                    i += u
                     for im in range(sp.nmol):
-                        f.write(" {0:5s}   {1:19.9f} {2:19.9f} {3:19.9f}\n".format(at.name, self.x[i], self.y[i], self.z[i]))
-                        i += 1       
-    
+                        f.write(" {0:5s}   {1:19.9f} {2:19.9f} {3:19.9f}\n".format(at.name, self.x[i]/bohr, self.y[i]/bohr, self.z[i]/bohr))
+                        i += len(sp.atom)
+                    i = y
+                    u = u +1
+                y = len(sp.atom)*sp.nmol
+                u = 0
+
     def writedlp(self, cos4 = False):
         with open('FIELD', 'w') as f:
             f.write('created by fftool\n')
