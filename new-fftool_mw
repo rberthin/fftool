@@ -30,7 +30,7 @@ kCal = 4.184                            # kJ
 eV = 96.485                             # kJ/mol
 #RB_CHANGE
 bohr = 0.529177                         
-kJmol2au = 3.8e-04
+kJmol2au = 3.80879803e-04
 deg2rad = 0.0174533
 # --------------------------------------
 
@@ -2037,7 +2037,7 @@ class system(object):
             f.write('timestep  41.341  # 1 femtoseconde = 41.341 a.u.\n')
             f.write('temperature   298\n\n')
             f.write('# Velocity Parameters\n')
-	    f.write('#velocity\n')
+            f.write('#velocity\n')
             f.write('#  create True\n')
             f.write('#  scale global 1\n\n')
             f.write('# Thermostat Parameters\n')
@@ -2089,11 +2089,16 @@ class system(object):
                      if bd.pot == 'harm':
                         f.write('    harmonic bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
                                 name1[bd.i], name1[bd.j], bd.par[1]*0.5*kJmol2au*bohr**2, bd.par[0]/bohr))
-                        f.write('\n')
-                     elif bd.pot == 'cons':
+                 f.write('\n')
+                 for bd in sp.bond:
+                     if bd.pot == 'cons':
+                        constraint = True
                         f.write('    constraint  {0:4s}  {1:4s}  {2}  \n'.format(
                                 name1[bd.i], name1[bd.j], bd.par[0]/bohr))
-                        f.write('\n')
+                 f.write('\n')
+                 if constraint:
+                    f.write('constraints_algorithm rattle 1.0e-7 100\n\n')
+                 constraint = False
 
                  for an in sp.angle:
                      f.write('    harmonic angle  {0:4s}  {1:4s}  {2:4s}  {3}  {4}\n'.format(
@@ -2185,7 +2190,7 @@ class system(object):
                     u = u +1
                 y = len(sp.atom)*sp.nmol
                 u = 0
-
+    
     def writedlp(self, cos4 = False):
         with open('FIELD', 'w') as f:
             f.write('created by fftool\n')
