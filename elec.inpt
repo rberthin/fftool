@@ -1,0 +1,8 @@
+2
+CG1  elec  1440  12.011  0.955234657  0.00  ft  0.511519  3.3425  0.511519  3.3425 0.511519  3.3425
+planar_electrode1_ua  
+CG2  elec  1440  12.011  0.955234657  0.00  ft  0.511519  3.3425  0.511519  3.3425 0.511519  3.3425
+planar_electrode2_ua  
+electrode_charge cg 1.0e-12 100
+charge_neutrality false
+compute_force true

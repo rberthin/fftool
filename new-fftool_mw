@@ -2033,22 +2033,22 @@ class system(object):
             f.write('# Check run\n')
             f.write('# =========\n\n')
             f.write('# Global parameters\n')
-            f.write('num_steps   0\n')
-            f.write('timestep  41.341  # 1 femtoseconde = 41.341 a.u.\n')
-            f.write('temperature   298\n\n')
+            f.write('num_steps   XXX\n')
+            f.write('timestep  XXX  # 1 femtoseconde = 41.341 a.u.\n')
+            f.write('temperature   XXX #298\n\n')
             f.write('# Velocity Parameters\n')
             f.write('#velocity\n')
-            f.write('#  create True\n')
-            f.write('#  scale global 1\n\n')
+            f.write('#  create XXX #True or False\n')
+            f.write('#  scale global XXX\n\n')
             f.write('# Thermostat Parameters\n')
             f.write('#thermostat\n')
-            f.write('#  relaxation_time 20670.5 #in a.u.\n\n')
+            f.write('#  relaxation_time XXX # 20670.5 in a.u.\n\n')
             f.write('# Barostat Parameters\n')
             f.write('#barostat\n')
-            f.write('#  pressure  3.3988273773641905e-9\n')
-            f.write('#  relaxation_time 103352.5\n\n')
+            f.write('#  pressure  XXX # 3.3988273773641905e-9\n')
+            f.write('#  relaxation_time XXX # 103352.5\n\n')
             f.write('# Box\n')
-            f.write('num_pbc  3\n\n')
+            f.write('num_pbc  XXX # 3\n\n')
             f.write('# Ions definition\n')
             f.write('# ---------------\n\n')
             
@@ -2097,7 +2097,7 @@ class system(object):
                                 name1[bd.i], name1[bd.j], bd.par[0]/bohr))
                  f.write('\n')
                  if constraint:
-                    f.write('constraints_algorithm rattle 1.0e-7 100\n\n')
+                    f.write('constraints_algorithm rattle XXX   # 1.0e-7 100\n\n')
                  constraint = False
 
                  for an in sp.angle:
@@ -2120,14 +2120,14 @@ class system(object):
             f.write('interactions\n')
             f.write('\n')
             f.write('  coulomb\n')
-            f.write('    coulomb_rtol       2.00000e-05\n')
-            f.write('    coulomb_rcut\n')
-            f.write('    coulomb_ktol       1.0e-07\n')
+            f.write('    coulomb_rtol       XXX   # 2.00000e-05\n')
+            f.write('    coulomb_rcut XXX \n')
+            f.write('    coulomb_ktol       XXX   # 1.0e-07\n')
             f.write('\n')
             
             if at.pot == 'lj':
                 f.write('  lennard-jones\n')
-                f.write('     lj_rcut\n')
+                f.write('     lj_rcut  XXX \n')
                 f.write('     #lj_3D_tail_correction\n')
                 for nb in self.vdw:
                     if nb.i == nb.j : 
@@ -2137,11 +2137,11 @@ class system(object):
             
             elif at.pot == 'ft':
                 f.write('  fumi-tosi\n')
-                f.write('     ft_rcut\n')
+                f.write('     ft_rcut XXX\n')
                 f.write('     #ft_3D_pressure_tail_correction\n') 
                 for nb in self.vdw:
                     if nb.i == nb.j :
-                       f.write("     tf_pair  {0:4s} {1:4s}  {2}  {3}  {4}  {5}  {6}  {7}\n".format(
+                       f.write("     ft_pair  {0:4s} {1:4s}  {2}  {3}  {4}  {5}  {6}  {7}\n".format(
                            nb.i, nb.j, nb.par[0]*bohr, nb.par[1]*kJmol2au, nb.par[2]*kJmol2au/bohr**6, 
                            nb.par[3]*kJmol2au/bohr**8, nb.par[4]*bohr, nb.par[5]*bohr))
                 f.write('     ft_rule Mixing\n')
