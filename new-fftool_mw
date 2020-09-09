@@ -299,7 +299,23 @@ class bond(object):
         else:
             return False
 
+#RB
+class tang_toennies(object):
+    """tang toennies force field parameters"""
 
+    def __init__(self, i = -1, j = -1):
+        self.i = i
+        self.j = j
+        self.par = []
+        self.ityp = -1
+
+    def setpar(self, iatp, jatp, pot, par):
+        self.name = '{0}-{1}'.format(iatp, jatp)
+        self.iatp = iatp
+        self.jatp = jatp
+        self.par = par
+
+            
 class angle(object):
     """valence angle"""
 
@@ -1205,10 +1221,11 @@ class forcefield(object):
         self.angle = []
         self.dihed = []
         self.dimpr = []
-
+        self.tang_toennies = []   #RB 
+        
         try:
             with open(filename, 'r') as f:
-                i = ib = ia = ih = im = 0
+                i = ib = ia = ih = im = it = 0
                 for line in f:
                     if line.startswith('#') or line.strip() == '':
                         continue
@@ -1227,6 +1244,10 @@ class forcefield(object):
                         continue
                     elif line.lower().startswith('impro'):
                         section = 'improper'
+                        continue
+                    #RB    
+                    elif line.lower().startswith('tang'):
+                        section = 'tang_toennies'
                         continue
 
                     tok = line.strip().split()
@@ -1282,6 +1303,15 @@ class forcefield(object):
                         self.dimpr.append(dimpr())
                         self.dimpr[im].setpar(iatp, jatp, katp, latp, pot, par)
                         im += 1
+                     #RB  
+                    elif section == 'tang_toennies':
+                        iatp = tok[0]
+                        jatp = tok[1]
+                        par = [float(p) for p in tok[2:]]
+                        self.tang_toennies.append(bond())
+                        self.tang_toennies[it].setpar(iatp, jatp, par)
+                        it += 1
+    
 
         except IOError:
             print('  error: force field file ' + filename + ' not found')
@@ -1303,6 +1333,8 @@ class forcefield(object):
             print(dh)
         for di in self.dimpr:
             print(di)
+        for tt in self.tang_toennies:
+            print(tt)
 
 
 class vdw(object):
