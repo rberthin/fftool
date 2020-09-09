@@ -2087,7 +2087,7 @@ class system(object):
          
                  for bd in sp.bond:
                      if bd.pot == 'harm':
-                        f.write('    harmonic bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
+                        f.write('    harmonic_bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
                                 name1[bd.i], name1[bd.j], bd.par[1]*0.5*kJmol2au*bohr**2, bd.par[0]/bohr))
                  f.write('\n')
                  for bd in sp.bond:
@@ -2101,7 +2101,7 @@ class system(object):
                  constraint = False
 
                  for an in sp.angle:
-                     f.write('    harmonic angle  {0:4s}  {1:4s}  {2:4s}  {3}  {4}\n'.format(
+                     f.write('    harmonic_angle  {0:4s}  {1:4s}  {2:4s}  {3}  {4}\n'.format(
                              name1[an.j], name1[an.i], name1[an.k], an.par[1]*0.5*kJmol2au, an.par[0]*deg2rad))
                  f.write('\n')
 
