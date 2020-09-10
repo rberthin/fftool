@@ -2525,7 +2525,7 @@ def main():
         sim.readcoords('simbox.xyz')
         print('dlpoly files\n  FIELD\n  CONFIG')
         sim.writedlp(args.cos4)
-    if not (args.lammps or args.gmx or args.dlpoly or args.psf):
+    if not (args.lammps or args.gmx or args.dlpoly or args.psf or args.metalwalls):
         print('packmol file\n  pack.inp')
         if args.pbc:
             boxtol = 0.0
