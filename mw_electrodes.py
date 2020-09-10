@@ -4,7 +4,7 @@
 # import os
 # os.system("cp data.inpt data_backk.inpt")
 # os.system("cp runtime.inpt runtime_backk.inpt")
-
+from itertools import islice
 
 name = []
 typ = []
@@ -158,7 +158,14 @@ with open("runtime_backk.inpt", "r") as run:
     out.write('output\n')
     out.write(' default 1\n')
 
-
+out2 = open("data.inpt", "w")
+with open("data_backk.inpt", "r") as data:
+    head = list(islice(data, 8))
+    for n in range(4):
+       out2.write(str(head[n]))
+    out2.write("num_electrode_atoms              {0}\n".format(counter))
+    for n in range(5,8):
+        out2.write(str(head[n]))
 
 
 
