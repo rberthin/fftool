@@ -404,33 +404,6 @@ class dimpr(dihed):
             return "improper {0:5d} {1:5d} {2:5d} {3:5d}".format(self.i + 1,
                    self.j + 1, self.k + 1, self.l + 1)
 
-   #RB ADD_TT 
-class tang_toennies(object):
-    """tang toennies in a force field"""
-
-    def __init__(self, i= -1, j = -1):
-        self.i = i
-        self.j = j
-        self.ityp = -1
-        self.par = []
-
-    def __str__(self):
-        if hasattr(self, 'name'):
-            if self.i != -1:
-                return "tt_pair {0:5d} {1:5d}  {2}".format(self.i + 1,
-                        self.j + 1, str(self.par))
-            else:
-                return "bond {0}  {1} {2}".format(self.name, self.pot,
-                                                  str(self.par))
-        else:
-            return "bond {0:5d} {1:5d}".format(self.i + 1, self.j + 1)
-
-    def setpar(self, iatp, jatp, par):
-        self.name = '{0} {1}'.format(iatp, jatp)
-        self.iatp = iatp
-        self.jatp = jatp
-        self.par = par
-
 
 # --------------------------------------
 
@@ -1232,11 +1205,10 @@ class forcefield(object):
         self.angle = []
         self.dihed = []
         self.dimpr = []
-        self.tang_toennies = []  # RB
 
         try:
             with open(filename, 'r') as f:
-                i = ib = ia = ih = im = it = 0 # RB
+                i = ib = ia = ih = im = 0
                 for line in f:
                     if line.startswith('#') or line.strip() == '':
                         continue
@@ -1256,9 +1228,6 @@ class forcefield(object):
                     elif line.lower().startswith('impro'):
                         section = 'improper'
                         continue
-                    elif line.lower().startswith('tang'):
-                         section = 'tang_toennies'
-                         continue
 
                     tok = line.strip().split()
 
@@ -1313,14 +1282,6 @@ class forcefield(object):
                         self.dimpr.append(dimpr())
                         self.dimpr[im].setpar(iatp, jatp, katp, latp, pot, par)
                         im += 1
-                   # RB
-                   elif section == 'tang_toennies':
-                         iatp = tok[0]
-                         jatp = tok[1]
-                         par = [float(p) for p in tok[2:]]
-                         self.tang_toennies.append(tang_toennies())
-                         self.tang_toennies[it].setpar(iatp, jatp, par)
-                         it += 1
 
         except IOError:
             print('  error: force field file ' + filename + ' not found')
@@ -2123,13 +2084,13 @@ class system(object):
                      f.write("{0} ".format(at.name))
                      name1.append(at.name)
                  f.write('\n\n')
-         
+
+                 constraint = False        
+                 
                  for bd in sp.bond:
                      if bd.pot == 'harm':
                         f.write('    harmonic_bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
                                 name1[bd.i], name1[bd.j], bd.par[1]*0.5*kJmol2au*bohr**2, bd.par[0]/bohr))
-                 f.write('\n')
-                 for bd in sp.bond:
                      if bd.pot == 'cons':
                         constraint = True
                         f.write('    constraint  {0:4s}  {1:4s}  {2}  \n'.format(
@@ -2190,7 +2151,7 @@ class system(object):
                 for at1 in sp.atom:
                     for at2 in sp.atom:
                         if at2.par[6]!=0:
-                            f.write("     tt_pair  {0:4s}   {1:4s}     2.0000000000000000        4"
+                            f.write("     tt_pair   {0:4s}   {1:4s}     2.0000000000000000        4"
                                     "       1.0000000000000000\n".format(at1.name, at2.name))
             if at.pot == 'lj':
                 for at1 in sp.atom:
