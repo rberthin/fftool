@@ -10,7 +10,7 @@ name = []
 typ = []
 file = []
 count = []
-mass = []
+mass_elec = []
 width = []
 magnitude = []
 pot_typ = []
@@ -31,7 +31,7 @@ with open('elec.inpt') as f:
         if typ[i] == 'wall':
             counter = counter - 1
         count.append(temp.split()[2])
-        mass.append(temp.split()[3])
+        mass_elec.append(temp.split()[3])
         width.append(temp.split()[4])
         magnitude.append(temp.split()[5])
         pot_typ.append(temp.split()[6])
@@ -56,7 +56,7 @@ out = open("runtime.inpt", "w")
 lj = False
 ft = False
 species = []
-
+mass = []
 with open("runtime_backk.inpt", "r") as run:
     
     for line in run:
@@ -67,23 +67,25 @@ with open("runtime_backk.inpt", "r") as run:
 
         if (line.lstrip()).startswith("name"):
             species.append(line.split()[1])
-    print(species)        
+        if (line.lstrip()).startswith("mass"):
+            mass.append(line.split()[1])
+
     for i in range(int(nb_elec)):  
         if typ[i] == 'elec':
             out.write("  species_type\n")
             out.write("    name {0}\n".format(name[i]))
             out.write("    count {0}\n".format(count[i]))
             out.write("    charge gaussian {0}  {1}\n".format(width[i], magnitude[i]))
-            out.write("    mass {0}\n".format(mass[i]))
+            out.write("    mass {0}\n".format(mass_elec[i]))
             out.write("    mobile False\n\n")
         if typ[i] == 'wall':
             out.write("  species_type\n")
             out.write("    name {0}\n".format(name[i]))
             out.write("    count {0}\n".format(count[i]))    
             out.write("    charge point 0.0\n")
-            out.write("    mass {0}\n".format(mass[i]))
+            out.write("    mass {0}\n".format(mass_elec[i]))
             out.write("    mobile False\n\n")
-            
+                
     out.write("molecules\n")   
     for line in run:
         if (line.lstrip()).startswith("interactions"):
@@ -134,9 +136,6 @@ with open("runtime_backk.inpt", "r") as run:
                            name[i], name[i], pot1[i], pot2[i], pot3[i], pot4[i], pot5[i], pot6[i]))
 
 
-# In[45]:
-
-
 with open("runtime_backk.inpt", "r") as run:
     for line in run:
         if (line.lstrip()).startswith("lj_rule"):
@@ -149,10 +148,16 @@ with open("runtime_backk.inpt", "r") as run:
             
         if (line.lstrip()).startswith("tt_pair"):
             out.write("{0}".format(line))
-               
+    for i in range(int(nb_elec)):
+        for j in range(len(species)):
+            if float(mass[j]) > 2.0:
+               out.write("     tt_pair   {0:4s}   {1:4s}     2.0000000000000000        4"
+                        "       1.0000000000000000\n".format(name[i], species[j]))
 
+    out.write('\n')
+    out.write('output\n')
+    out.write(' default 1\n')
 
-# In[ ]:
 
 
 
