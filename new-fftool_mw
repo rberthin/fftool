@@ -2121,7 +2121,7 @@ class system(object):
             f.write('\n')
             f.write('  coulomb\n')
             f.write('    coulomb_rtol       XXX   # 2.00000e-05\n')
-            f.write('    coulomb_rcut XXX \n')
+            f.write('    coulomb_rcut       XXX \n')
             f.write('    coulomb_ktol       XXX   # 1.0e-07\n')
             f.write('\n')
             
