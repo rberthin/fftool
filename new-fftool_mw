@@ -2052,7 +2052,7 @@ class system(object):
             f.write('# Ions definition\n')
             f.write('# ---------------\n\n')
             
-            f.write('species\n\n') 
+            f.write('species\n\n')
             for sp in self.spec:
                  f.write("#{0}\n\n".format(sp.name))
                  for at in sp.atom:
@@ -2062,15 +2062,22 @@ class system(object):
                      f.write("    charge point {0}\n".format(at.q))
                      f.write("    mass {0}\n".format(at.m))
                      if at.pot == 'lj':
-                         if at.par[2]!=0:
-                            f.write('    polarizability {0}\n\n'.format(at.par[2]/(bohr**3)))
+                         if len(at.par) > 2:
+                             if at.par[2]!=0:
+                                 f.write('    polarizability {0}\n\n'.format(at.par[2]/(bohr**3)))
+                             else:
+                                f.write('\n')
                          else:
                              f.write('\n')
+
                      elif at.pot == 'ft':
-                         if at.par[6] !=0:
-                            f.write('    polarizability {0}\n\n'.format(at.par[6]/(bohr**3)))
+                         if len(at.par) > 6:
+                            if at.par[6] !=0:
+                               f.write('    polarizability {0}\n\n'.format(at.par[6]/(bohr**3)))
+                            else:
+                               f.write('\n')
                          else:
-                             f.write('\n')
+                            f.write('\n')
             f.write('#dipoles_minimization cg 1.0e-06 100\n\n')
 
             f.write('molecules\n\n')
@@ -2150,15 +2157,17 @@ class system(object):
             if at.pot == 'ft':
                 for at1 in sp.atom:
                     for at2 in sp.atom:
-                        if at2.par[6]!=0:
-                            f.write("     tt_pair   {0:4s}   {1:4s}     2.0000000000000000        4"
-                                    "       1.0000000000000000\n".format(at1.name, at2.name))
+                        if len(at2.par) > 6:
+                            if at2.par[6]!=0:
+                                f.write("     tt_pair   {0:4s}   {1:4s}     2.0000000000000000        4"
+                                       "       1.0000000000000000\n".format(at1.name, at2.name))
             if at.pot == 'lj':
                 for at1 in sp.atom:
                     for at2 in sp.atom:
-                        if at2.par[2]!=0:
-                            f.write("     tt_pair  {0:4s}   {1:4s}     2.0000000000000000        4"
-                                    "       1.0000000000000000\n".format(at1.name, at2.name))
+                        if len(at2.par) > 2:
+                            if at2.par[2]!=0:
+                                f.write("     tt_pair  {0:4s}   {1:4s}     2.0000000000000000        4"
+                                       "       1.0000000000000000\n".format(at1.name, at2.name))
             f.write('\n')
             f.write('output\n')
             f.write(' default 1\n')
@@ -2176,21 +2185,7 @@ class system(object):
             f.write('# box\n')
             f.write(' {0}  {1}  {2}\n'.format(self.box.lx/bohr, self.box.ly/bohr, self.box.lz/bohr))
             f.write(' # coordinates :      {0} species - step  0\n'.format(tot_atom))
-#            i = 0
-#            u = 0
-#            y = 0
-#            for sp in self.spec:
-#                i += y
-#                for at in sp.atom:
-#                    i += u
-#                    for im in range(sp.nmol):
-#                        f.write(" {0:5s}   {1:19.9f} {2:19.9f} {3:19.9f}\n".format(at.name, self.x[i], self.y[i], self.z[i]))
-#                        i += len(sp.atom)
-#                    i = y
-#                    u = u +1
-#                y = len(sp.atom)*sp.nmol
-#                u = 0
-
+            # *** WRITTEN BY THOMAS DUFILS ***
             i = 0
             istart = 0
             for sp in self.spec:
