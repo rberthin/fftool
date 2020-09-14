@@ -2086,49 +2086,50 @@ class system(object):
 
             f.write('molecules\n\n')
             for sp in self.spec:
-                 f.write('  molecule_type\n')
-                 f.write("    name {0}\n".format(sp.name))
-                 f.write("    count {0}\n".format(sp.nmol))
-                 f.write("    sites ")
-                 name1 = []
-                 for at in sp.atom:
-                     f.write("{0} ".format(at.name))
-                     name1.append(at.name)
-                 f.write('\n\n')
+                 if len(sp.atom) > 1:
+                    f.write('  molecule_type\n')
+                    f.write("    name {0}\n".format(sp.name))
+                    f.write("    count {0}\n".format(sp.nmol))
+                    f.write("    sites ")
+                    name1 = []
+                    for at in sp.atom:
+                       f.write("{0} ".format(at.name))
+                       name1.append(at.name)
+                    f.write('\n\n')
 
-                 constraint = False        
-                 
-                 for bd in sp.bond:
-                     if bd.pot == 'harm':
-                        f.write('    harmonic_bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
-                                name1[bd.i], name1[bd.j], bd.par[1]*0.5*kJmol2au*bohr**2, bd.par[0]/bohr))
-                 f.write('\n')
-                 for bd in sp.bond:       
-                     if bd.pot == 'cons':
-                        constraint = True
-                        f.write('    constraint  {0:4s}  {1:4s}  {2}  \n'.format(
-                                name1[bd.i], name1[bd.j], bd.par[0]/bohr))
-                 f.write('\n')
-                 if constraint:
-                    f.write('constraints_algorithm rattle XXX   # 1.0e-7 100\n\n')
-                 constraint = False
+                    constraint = False        
+                    
+                    for bd in sp.bond:
+                       if bd.pot == 'harm':
+                           f.write('    harmonic_bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
+                                   name1[bd.i], name1[bd.j], bd.par[1]*0.5*kJmol2au*bohr**2, bd.par[0]/bohr))
 
-                 for an in sp.angle:
-                     f.write('    harmonic_angle  {0:4s}  {1:4s}  {2:4s}  {3}  {4}\n'.format(
-                             name1[an.j], name1[an.i], name1[an.k], an.par[1]*0.5*kJmol2au, an.par[0]*deg2rad))
-                 f.write('\n')
+                    for bd in sp.bond:       
+                       if bd.pot == 'cons':
+                           constraint = True
+                           f.write('    constraint  {0:4s}  {1:4s}  {2}  \n'.format(
+                                   name1[bd.i], name1[bd.j], bd.par[0]/bohr))
+                    f.write('\n')
+                    if constraint:
+                       f.write('constraints_algorithm rattle XXX   # 1.0e-7 100\n\n')
+                    constraint = False
 
-                 for dh in sp.dihed:
-                     f.write("    dihedral {0:4s} {1:4s} {2:4s} {3:4s}  {4}  {5}  {6}  {7}\n".format(
-                            name1[dh.i], name1[dh.j], name1[dh.k], name1[dh.l], dh.par[0]*kJmol2au, 
-                            dh.par[1]*kJmol2au, dh.par[2]*kJmol2au, dh.par[3]*kJmol2au))
-                 f.write('\n')
+                    for an in sp.angle:
+                        f.write('    harmonic_angle  {0:4s}  {1:4s}  {2:4s}  {3}  {4}\n'.format(
+                                name1[an.j], name1[an.i], name1[an.k], an.par[1]*0.5*kJmol2au, an.par[0]*deg2rad))
+                    f.write('\n')
+
+                    for dh in sp.dihed:
+                        f.write("    dihedral {0:4s} {1:4s} {2:4s} {3:4s}  {4}  {5}  {6}  {7}\n".format(
+                               name1[dh.i], name1[dh.j], name1[dh.k], name1[dh.l], dh.par[0]*kJmol2au, 
+                               dh.par[1]*kJmol2au, dh.par[2]*kJmol2au, dh.par[3]*kJmol2au))
+                    f.write('\n')
                
-                 for di in sp.dimpr:
-                     f.write("    improper {0:4s} {1:4s} {2:4s} {3:4s}  {4}  {5}  {6}  {7}\n".format(
-                            name1[di.i], name1[di.j], name1[di.k], name1[di.l], di.par[0]*kJmol2au, 
-                            di.par[1]*kJmol2au, di.par[2]*kJmol2au, di.par[3]*kJmol2au))
-                 f.write('\n')
+                    for di in sp.dimpr:
+                        f.write("    improper {0:4s} {1:4s} {2:4s} {3:4s}  {4}  {5}  {6}  {7}\n".format(
+                               name1[di.i], name1[di.j], name1[di.k], name1[di.l], di.par[0]*kJmol2au, 
+                               di.par[1]*kJmol2au, di.par[2]*kJmol2au, di.par[3]*kJmol2au))
+                    f.write('\n')
         
             f.write('interactions\n\n')
             f.write('  coulomb\n')
