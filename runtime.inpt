@@ -82,7 +82,7 @@ species
   species_type
     name CG2
     count 1440
-    charge gaussian 0.955234657  0.00
+    charge point 0.0
     mass 12.011
     mobile False
 
@@ -117,14 +117,6 @@ electrodes
   electrode_type
   name   CG1
   species   CG1
-  potential   0
-  #piston 0.0 1
-  #thomas_fermi_length 0.0
-  #voronoi_volume ***
-
-  electrode_type
-  name   CG2
-  species   CG2
   potential   0
   #piston 0.0 1
   #thomas_fermi_length 0.0

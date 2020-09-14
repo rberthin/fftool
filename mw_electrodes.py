@@ -5,6 +5,7 @@
 # os.system("cp data.inpt data_backk.inpt")
 # os.system("cp runtime.inpt runtime_backk.inpt")
 from itertools import islice
+import numpy as np
 
 name = []
 typ = []
@@ -24,6 +25,7 @@ pot6 = []
 with open('elec.inpt') as f:
     nb_elec = f.readline()
     counter = int(nb_elec)
+    elec_type = f.readline()
     for i in range(int(nb_elec)):
         temp = f.readline()
         name.append(temp.split()[0])
@@ -45,13 +47,19 @@ with open('elec.inpt') as f:
             pot4.append(float(temp.split()[10]))
             pot5.append(float(temp.split()[11]))
             pot6.append(float(temp.split()[12]))
-
-        temp = f.readline()
-        file.append(temp.split()[0])
     elec_charges = f.readline()
     neutrality = f.readline()
     compute_force = f.readline()
 
+natom_elec = 0
+natom_add = 0
+
+for i in range(int(nb_elec)):
+    if typ[i] == 'elec':
+        natom_elec += int(count[i]) 
+
+    natom_add += int(count[i])
+    
 out = open("runtime.inpt", "w")  
 lj = False
 ft = False
@@ -158,14 +166,36 @@ with open("runtime_backk.inpt", "r") as run:
     out.write('output\n')
     out.write(' default 1\n')
 
+natom = 0
+natom_tot = 0
+
 out2 = open("data.inpt", "w")
 with open("data_backk.inpt", "r") as data:
-    head = list(islice(data, 8))
-    for n in range(4):
+
+    head = list(islice(data, 3))
+    for n in range(3):
        out2.write(str(head[n]))
-    out2.write("num_electrode_atoms              {0}\n".format(counter))
-    for n in range(5,8):
+    ligne = data.readline()
+    natom = int(ligne.split()[1])
+    natom_tot = natom + natom_add
+    out2.write("num_atoms                      {0}\n".format(natom_tot))
+    out2.write("num_electrode_atoms              {0}\n".format(natom_elec))
+
+    head = list(islice(data, 3))
+    for n in range(1,3):
         out2.write(str(head[n]))
+    out2.write("  # coordinates :      {0} species - step  0\n".format(natom_tot))
 
+    atname, atx, aty, atz = np.loadtxt(data, dtype='str', unpack= True)
+   
+with open("planar_elec_ua", "r") as elec :
+     elecx, elecy, elecz = np.loadtxt(elec, unpack= True)
+     elec_thick = (np.amax(elecz) - np.amin(elecz))
+     for at in range(natom_elec/int(nb_elec)):
+          
+   #for n in range(natom):
+   #     out2.write(" {0}             {1}\n".format(atname[n], atx[n]))
 
-
+    #if elec_type == 'planar\n':
+    #    with open("planar_elec_ua", "r") as elec : 
+        
