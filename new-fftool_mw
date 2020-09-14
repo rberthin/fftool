@@ -2051,6 +2051,8 @@ class system(object):
             f.write('num_pbc  XXX # 3\n\n')
             f.write('# Ions definition\n')
             f.write('# ---------------\n\n')
+
+            pol = False
             
             f.write('species\n\n')
             for sp in self.spec:
@@ -2063,6 +2065,7 @@ class system(object):
                      f.write("    mass {0}\n".format(at.m))
                      if at.pot == 'lj':
                          if len(at.par) > 2:
+                             pol = True
                              if at.par[2]!=0:
                                  f.write('    polarizability {0}\n\n'.format(at.par[2]/(bohr**3)))
                              else:
@@ -2071,6 +2074,7 @@ class system(object):
                              f.write('\n')
 
                      elif at.pot == 'ft':
+                         pol = True
                          if len(at.par) > 6:
                             if at.par[6] !=0:
                                f.write('    polarizability {0}\n\n'.format(at.par[6]/(bohr**3)))
@@ -2098,6 +2102,8 @@ class system(object):
                      if bd.pot == 'harm':
                         f.write('    harmonic_bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
                                 name1[bd.i], name1[bd.j], bd.par[1]*0.5*kJmol2au*bohr**2, bd.par[0]/bohr))
+
+                 for bd in sp.bond:       
                      if bd.pot == 'cons':
                         constraint = True
                         f.write('    constraint  {0:4s}  {1:4s}  {2}  \n'.format(
@@ -2124,13 +2130,11 @@ class system(object):
                             di.par[1]*kJmol2au, di.par[2]*kJmol2au, di.par[3]*kJmol2au))
                  f.write('\n')
         
-            f.write('interactions\n')
-            f.write('\n')
+            f.write('interactions\n\n')
             f.write('  coulomb\n')
             f.write('    coulomb_rtol       XXX   # 2.00000e-05\n')
             f.write('    coulomb_rcut       XXX \n')
-            f.write('    coulomb_ktol       XXX   # 1.0e-07\n')
-            f.write('\n')
+            f.write('    coulomb_ktol       XXX   # 1.0e-07\n\n')
             
             if at.pot == 'lj':
                 f.write('  lennard-jones\n')
@@ -2151,20 +2155,20 @@ class system(object):
                        f.write("     ft_pair  {0:4s} {1:4s}  {2}  {3}  {4}  {5}  {6}  {7}\n".format(
                            nb.i, nb.j, nb.par[0]*bohr, nb.par[1]*kJmol2au, nb.par[2]*kJmol2au/bohr**6, 
                            nb.par[3]*kJmol2au/bohr**8, nb.par[4]*bohr, nb.par[5]*bohr))
-                f.write('     ft_rule Mixing\n')
-            f.write('\n')
-            f.write('damping\n')
-            if at.pot == 'ft':
-                for at1 in sp.atom:
-                    for at2 in sp.atom:
-                        if len(at2.par) > 6:
+                f.write('     ft_rule Mixing\n\n')
+
+            if pol:
+                f.write('damping\n')
+
+                if at.pot == 'ft':
+                    for at1 in sp.atom:
+                        for at2 in sp.atom:
                             if at2.par[6]!=0:
                                 f.write("     tt_pair   {0:4s}   {1:4s}     2.0000000000000000        4"
                                        "       1.0000000000000000\n".format(at1.name, at2.name))
-            if at.pot == 'lj':
-                for at1 in sp.atom:
-                    for at2 in sp.atom:
-                        if len(at2.par) > 2:
+                if at.pot == 'lj':
+                    for at1 in sp.atom:
+                        for at2 in sp.atom:
                             if at2.par[2]!=0:
                                 f.write("     tt_pair  {0:4s}   {1:4s}     2.0000000000000000        4"
                                        "       1.0000000000000000\n".format(at1.name, at2.name))
