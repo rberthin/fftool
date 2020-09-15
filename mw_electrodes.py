@@ -26,6 +26,8 @@ with open('elec.inpt') as f:
     nb_elec = f.readline()
     counter = int(nb_elec)
     elec_type = f.readline()
+    if elec_type == 'porous\n':
+     
     for i in range(int(nb_elec)):
         temp = f.readline()
         name.append(temp.split()[0])
