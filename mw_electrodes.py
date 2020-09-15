@@ -26,8 +26,6 @@ with open('elec.inpt') as f:
     nb_elec = f.readline()
     counter = int(nb_elec)
     elec_type = f.readline()
-    if elec_type == 'porous\n':
-     
     for i in range(int(nb_elec)):
         temp = f.readline()
         name.append(temp.split()[0])
@@ -196,29 +194,47 @@ with open("data_backk.inpt", "r") as data:
     bulk_minz = np.amin(atz)
     bulk_maxz = np.amax(atz)
 
-if elec_type == 'planar\n':   
 
-    elecx, elecy, elecz = np.loadtxt('planar_elec_ua', unpack= True)
-    elec_thick = (np.amax(elecz) - np.amin(elecz))
-    
-    for n in range(len(atx)):
-        atx[n] = atx[n]          
-        aty[n] = aty[n]   
-        atz[n] = atz[n]-bulk_minz + elec_thick + 6.0 + 1.10
-    
-    for n in range(natom):
-        out2.write(" {0}    {1}  {2}  {3}\n".format(atname[n], atx[n], aty[n], atz[n]))
-    
-    for i in range(int(counter)):
-        if i < (counter/2):
-            for at in range(len(elecx)):
-                out2.write(" {0}    {1}  {2}  {3}\n".format(
-                       name[i], elecx[at], elecy[at], elecz[at]+1.10))
-        else:
-            for at in range(len(elecx)):
-                out2.write(" {0}    {1}  {2}  {3}\n".format(
-                       name[i], elecx[at], elecy[at], elecz[at]+elec_thick+bulk_maxz+13.10))
-    
-    #if elec_type == 'planar\n':
-    #    with open("planar_elec_ua", "r") as elec :
-        
+if elec_type == 'planar\n':   
+    elec1x, elec1y, elec1z = np.loadtxt('planar_elec_ua', unpack= True)
+
+if elec_type == 'porous\n':
+    elec1x, elec1y, elec1z = np.loadtxt('porous_left_ua', unpack= True)
+    elec2x, elec2y, elec2z = np.loadtxt('porous_right_ua', unpack= True)
+
+elec_thick = (np.amax(elec1z) - np.amin(elec1z))
+
+for n in range(len(atx)):
+    atz[n] = atz[n]-bulk_minz + elec_thick + 6.0 + 1.10
+    out2.write(" {0}    {1}  {2}  {3}\n".format(atname[n], atx[n], aty[n], atz[n]))
+
+if elec_type == 'planar\n':
+   for i in range(natom_elec):
+       if i < (natom_elec/2):
+           for at in range(len(elec1x)):
+               out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[i], elec1x[at], elec1y[at], elec1z[at]+1.10))
+       else:
+           for at in range(len(elec1x)):
+               out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[i], elec1x[at], elec1y[at], elec1z[at]+elec_thick+bulk_maxz+13.10))
+
+if elec_type == 'porous\n':
+   for at in range(int(count[0])):
+       if at < int(int(count[0])/2):
+           out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[0], elec1x[at], elec1y[at], elec1z[at]+1.10))
+   for at in range(int(count[0])):
+       if at < int(count[0])/2:
+           out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[0], elec2x[at], elec2y[at], elec2z[at]+2*elec_thick+bulk_maxz+13.10))
+   print(int(count[0]), natom_elec)
+   print(len(name))
+   print(name[1])
+   for i in range(natom_elec-1):
+       if i > 0:
+           for at in range(int(count[0]),len(elec1x)):
+               print(i,at)
+               out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[i], elec1x[at], elec1y[at], elec1z[at]+1.10))
+ 

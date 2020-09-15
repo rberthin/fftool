@@ -2199,7 +2199,7 @@ class system(object):
                         for at in sp.atom:
                             if self.attype[it].name == at.name:
                                f.write("{0:8s} {1:19.9f} {2:19.9f} {3:19.9f}\n"\
-                               .format(at.name, self.x[i], self.y[i], self.z[i]))
+                               .format(at.name, self.x[i]/bohr, self.y[i]/bohr, self.z[i]/bohr))
                             i += 1
                     i = istart
                 istart = istart + sp.nmol * len(sp.atom)
