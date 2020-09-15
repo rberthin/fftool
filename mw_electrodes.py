@@ -21,7 +21,7 @@ pot3 = []
 pot4 = []
 pot5 = []
 pot6 = []
-
+bohr = 0.529177
 with open('elec.inpt') as f:
     nb_elec = f.readline()
     counter = int(nb_elec)
@@ -187,15 +187,36 @@ with open("data_backk.inpt", "r") as data:
     out2.write("  # coordinates :      {0} species - step  0\n".format(natom_tot))
 
     atname, atx, aty, atz = np.loadtxt(data, dtype='str', unpack= True)
-   
-with open("planar_elec_ua", "r") as elec :
-     elecx, elecy, elecz = np.loadtxt(elec, unpack= True)
-     elec_thick = (np.amax(elecz) - np.amin(elecz))
-     for at in range(natom_elec/int(nb_elec)):
-          
-   #for n in range(natom):
-   #     out2.write(" {0}             {1}\n".format(atname[n], atx[n]))
+    atx = atx.astype(float)
+    aty = aty.astype(float)
+    atz = atz.astype(float)
 
+    bulk_minz = np.amin(atz)
+    bulk_maxz = np.amax(atz)
+
+if elec_type == 'planar\n':   
+
+    elecx, elecy, elecz = np.loadtxt('planar_elec_ua', unpack= True)
+    elec_thick = (np.amax(elecz) - np.amin(elecz))
+    
+    for n in range(len(atx)):
+        atx[n] = atx[n]          
+        aty[n] = aty[n]   
+        atz[n] = atz[n]-bulk_minz + elec_thick + 6.0 + 1.10
+    
+    for n in range(natom):
+        out2.write(" {0}    {1}  {2}  {3}\n".format(atname[n], atx[n], aty[n], atz[n]))
+    
+    for i in range(int(counter)):
+        if i < (counter/2):
+            for at in range(len(elecx)):
+                out2.write(" {0}    {1}  {2}  {3}\n".format(
+                       name[i], elecx[at], elecy[at], elecz[at]+1.10))
+        else:
+            for at in range(len(elecx)):
+                out2.write(" {0}    {1}  {2}  {3}\n".format(
+                       name[i], elecx[at], elecy[at], elecz[at]+elec_thick+bulk_maxz+13.10))
+    
     #if elec_type == 'planar\n':
-    #    with open("planar_elec_ua", "r") as elec : 
+    #    with open("planar_elec_ua", "r") as elec :
         
