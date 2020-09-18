@@ -2177,7 +2177,7 @@ class system(object):
                     if nb.i == nb.j : 
                        f.write("     lj_pair  {0:4s} {1:4s}  {2}   {3}\n".format(nb.i, nb.j, 
                                 nb.par[1], nb.par[0]))
-                f.write('     lj_rule Mixing\n')
+                f.write('     lj_rule Lorentz_Berthelot\n')
             
             elif at.pot == 'ft':
                 f.write('  fumi-tosi\n')
