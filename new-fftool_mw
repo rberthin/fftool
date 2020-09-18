@@ -2210,7 +2210,6 @@ class system(object):
             f.write(' default 1\n')
 
         with open('data.inpt', 'w') as f:   
-            f.write("#created by fftool\n")
             f.write('# header\n')
             f.write('step                           0    0\n')
             tot_atom = 0
