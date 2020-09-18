@@ -2083,8 +2083,10 @@ class system(object):
             f.write('num_pbc  XXX # 3\n\n')
             f.write('# Ions definition\n')
             f.write('# ---------------\n\n')
+
+            pol = False
             
-            f.write('species\n\n') 
+            f.write('species\n\n')
             for sp in self.spec:
                  f.write("#{0}\n\n".format(sp.name))
                  for at in sp.atom:
@@ -2094,68 +2096,78 @@ class system(object):
                      f.write("    charge point {0}\n".format(at.q))
                      f.write("    mass {0}\n".format(at.m))
                      if at.pot == 'lj':
-                         if at.par[2]!=0:
-                            f.write('    polarizability {0}\n\n'.format(at.par[2]/(bohr**3)))
+                         if len(at.par) > 2:
+                             pol = True
+                             if at.par[2]!=0:
+                                 f.write('    polarizability {0}\n\n'.format(at.par[2]/(bohr**3)))
+                             else:
+                                f.write('\n')
                          else:
                              f.write('\n')
+
                      elif at.pot == 'ft':
-                         if at.par[6] !=0:
-                            f.write('    polarizability {0}\n\n'.format(at.par[6]/(bohr**3)))
+                         pol = True
+                         if len(at.par) > 6:
+                            if at.par[6] !=0:
+                               f.write('    polarizability {0}\n\n'.format(at.par[6]/(bohr**3)))
+                            else:
+                               f.write('\n')
                          else:
-                             f.write('\n')
+                            f.write('\n')
             f.write('#dipoles_minimization cg 1.0e-06 100\n\n')
 
             f.write('molecules\n\n')
             for sp in self.spec:
-                 f.write('  molecule_type\n')
-                 f.write("    name {0}\n".format(sp.name))
-                 f.write("    count {0}\n".format(sp.nmol))
-                 f.write("    sites ")
-                 name1 = []
-                 for at in sp.atom:
-                     f.write("{0} ".format(at.name))
-                     name1.append(at.name)
-                 f.write('\n\n')
-         
-                 for bd in sp.bond:
-                     if bd.pot == 'harm':
-                        f.write('    harmonic_bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
-                                name1[bd.i], name1[bd.j], bd.par[1]*0.5*kJmol2au*bohr**2, bd.par[0]/bohr))
-                 f.write('\n')
-                 for bd in sp.bond:
-                     if bd.pot == 'cons':
-                        constraint = True
-                        f.write('    constraint  {0:4s}  {1:4s}  {2}  \n'.format(
-                                name1[bd.i], name1[bd.j], bd.par[0]/bohr))
-                 f.write('\n')
-                 if constraint:
-                    f.write('constraints_algorithm rattle XXX   # 1.0e-7 100\n\n')
-                 constraint = False
+                 if len(sp.atom) > 1:
+                    f.write('  molecule_type\n')
+                    f.write("    name {0}\n".format(sp.name))
+                    f.write("    count {0}\n".format(sp.nmol))
+                    f.write("    sites ")
+                    name1 = []
+                    for at in sp.atom:
+                       f.write("{0} ".format(at.name))
+                       name1.append(at.name)
+                    f.write('\n\n')
 
-                 for an in sp.angle:
-                     f.write('    harmonic_angle  {0:4s}  {1:4s}  {2:4s}  {3}  {4}\n'.format(
-                             name1[an.j], name1[an.i], name1[an.k], an.par[1]*0.5*kJmol2au, an.par[0]*deg2rad))
-                 f.write('\n')
+                    constraint = False        
+                    
+                    for bd in sp.bond:
+                       if bd.pot == 'harm':
+                           f.write('    harmonic_bond  {0:4s}  {1:4s}  {2}  {3}\n'.format(
+                                   name1[bd.i], name1[bd.j], bd.par[1]*0.5*kJmol2au*bohr**2, bd.par[0]/bohr))
 
-                 for dh in sp.dihed:
-                     f.write("    dihedral {0:4s} {1:4s} {2:4s} {3:4s}  {4}  {5}  {6}  {7}\n".format(
-                            name1[dh.i], name1[dh.j], name1[dh.k], name1[dh.l], dh.par[0]*kJmol2au, 
-                            dh.par[1]*kJmol2au, dh.par[2]*kJmol2au, dh.par[3]*kJmol2au))
-                 f.write('\n')
+                    for bd in sp.bond:       
+                       if bd.pot == 'cons':
+                           constraint = True
+                           f.write('    constraint  {0:4s}  {1:4s}  {2}  \n'.format(
+                                   name1[bd.i], name1[bd.j], bd.par[0]/bohr))
+                    f.write('\n')
+                    if constraint:
+                       f.write('constraints_algorithm rattle XXX   # 1.0e-7 100\n\n')
+                    constraint = False
+
+                    for an in sp.angle:
+                        f.write('    harmonic_angle  {0:4s}  {1:4s}  {2:4s}  {3}  {4}\n'.format(
+                                name1[an.j], name1[an.i], name1[an.k], an.par[1]*0.5*kJmol2au, an.par[0]*deg2rad))
+                    f.write('\n')
+
+                    for dh in sp.dihed:
+                        f.write("    dihedral {0:4s} {1:4s} {2:4s} {3:4s}  {4}  {5}  {6}  {7}\n".format(
+                               name1[dh.i], name1[dh.j], name1[dh.k], name1[dh.l], dh.par[0]*kJmol2au, 
+                               dh.par[1]*kJmol2au, dh.par[2]*kJmol2au, dh.par[3]*kJmol2au))
+                    f.write('\n')
                
-                 for di in sp.dimpr:
-                     f.write("    improper {0:4s} {1:4s} {2:4s} {3:4s}  {4}  {5}  {6}  {7}\n".format(
-                            name1[di.i], name1[di.j], name1[di.k], name1[di.l], di.par[0]*kJmol2au, 
-                            di.par[1]*kJmol2au, di.par[2]*kJmol2au, di.par[3]*kJmol2au))
-                 f.write('\n')
+                    for di in sp.dimpr:
+                        f.write("    improper {0:4s} {1:4s} {2:4s} {3:4s}  {4}  {5}  {6}  {7}\n".format(
+                               name1[di.i], name1[di.j], name1[di.k], name1[di.l], di.par[0]*kJmol2au, 
+                               di.par[1]*kJmol2au, di.par[2]*kJmol2au, di.par[3]*kJmol2au))
+                    f.write('\n')
         
-            f.write('interactions\n')
-            f.write('\n')
+            f.write('interactions\n\n')
             f.write('  coulomb\n')
             f.write('    coulomb_rtol       XXX   # 2.00000e-05\n')
-            f.write('    coulomb_rcut XXX \n')
-            f.write('    coulomb_ktol       XXX   # 1.0e-07\n')
-            f.write('\n')
+            f.write('    coulomb_rcut       XXX \n')
+            f.write('    coulomb_ktol       XXX   # 1.0e-07\n\n')
             
             if at.pot == 'lj':
                 f.write('  lennard-jones\n')
@@ -2176,21 +2188,23 @@ class system(object):
                        f.write("     ft_pair  {0:4s} {1:4s}  {2}  {3}  {4}  {5}  {6}  {7}\n".format(
                            nb.i, nb.j, nb.par[0]*bohr, nb.par[1]*kJmol2au, nb.par[2]*kJmol2au/bohr**6, 
                            nb.par[3]*kJmol2au/bohr**8, nb.par[4]*bohr, nb.par[5]*bohr))
-                f.write('     ft_rule Mixing\n')
-            f.write('\n')
-            f.write('damping\n')
-            if at.pot == 'ft':
-                for at1 in sp.atom:
-                    for at2 in sp.atom:
-                        if at2.par[6]!=0:
-                            f.write("     tt_pair  {0:4s}   {1:4s}     2.0000000000000000        4"
-                                    "       1.0000000000000000\n".format(at1.name, at2.name))
-            if at.pot == 'lj':
-                for at1 in sp.atom:
-                    for at2 in sp.atom:
-                        if at2.par[2]!=0:
-                            f.write("     tt_pair  {0:4s}   {1:4s}     2.0000000000000000        4"
-                                    "       1.0000000000000000\n".format(at1.name, at2.name))
+                f.write('     ft_rule Mixing\n\n')
+
+            if pol:
+                f.write('damping\n')
+
+                if at.pot == 'ft':
+                    for at1 in sp.atom:
+                        for at2 in sp.atom:
+                            if at2.par[6]!=0:
+                                f.write("     tt_pair   {0:4s}   {1:4s}     2.0000000000000000        4"
+                                       "       1.0000000000000000\n".format(at1.name, at2.name))
+                if at.pot == 'lj':
+                    for at1 in sp.atom:
+                        for at2 in sp.atom:
+                            if at2.par[2]!=0:
+                                f.write("     tt_pair  {0:4s}   {1:4s}     2.0000000000000000        4"
+                                       "       1.0000000000000000\n".format(at1.name, at2.name))
             f.write('\n')
             f.write('output\n')
             f.write(' default 1\n')
@@ -2208,20 +2222,19 @@ class system(object):
             f.write('# box\n')
             f.write(' {0}  {1}  {2}\n'.format(self.box.lx/bohr, self.box.ly/bohr, self.box.lz/bohr))
             f.write(' # coordinates :      {0} species - step  0\n'.format(tot_atom))
+            # *** WRITTEN BY THOMAS DUFILS ***
             i = 0
-            u = 0
-            y = 0
+            istart = 0
             for sp in self.spec:
-                i += y
-                for at in sp.atom:
-                    i += u
+                for it in range(len(self.attype)):
                     for im in range(sp.nmol):
-                        f.write(" {0:5s}   {1:19.9f} {2:19.9f} {3:19.9f}\n".format(at.name, self.x[i]/bohr, self.y[i]/bohr, self.z[i]/bohr))
-                        i += len(sp.atom)
-                    i = y
-                    u = u +1
-                y = len(sp.atom)*sp.nmol
-                u = 0
+                        for at in sp.atom:
+                            if self.attype[it].name == at.name:
+                               f.write("{0:8s} {1:19.9f} {2:19.9f} {3:19.9f}\n"\
+                               .format(at.name, self.x[i]/bohr, self.y[i]/bohr, self.z[i]/bohr))
+                            i += 1
+                    i = istart
+                istart = istart + sp.nmol * len(sp.atom)
     
     def writedlp(self, cos4 = False):
         with open('FIELD', 'w') as f:
@@ -2557,7 +2570,7 @@ def main():
         sim.readcoords('simbox.xyz')
         print('dlpoly files\n  FIELD\n  CONFIG')
         sim.writedlp(args.cos4)
-    if not (args.lammps or args.gmx or args.dlpoly or args.psf):
+    if not (args.lammps or args.gmx or args.dlpoly or args.psf or args.metalwalls):
         print('packmol file\n  pack.inp')
         if args.pbc:
             boxtol = 0.0

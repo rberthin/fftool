@@ -191,15 +191,22 @@ species
   dipoles_minimization cg 1.0e-6 100
 
   species_type
+    name P
+    count 400
+    charge point 0.0
+    mass 0.000
+    mobile False
+
+  species_type
     name CG1
-    count 1440
+    count 3821
     charge gaussian 0.955234657  0.00
     mass 12.011
     mobile False
 
   species_type
     name CG2
-    count 1440
+    count 3821
     charge gaussian 0.955234657  0.00
     mass 12.011
     mobile False
@@ -339,16 +346,16 @@ molecules
 electrodes
 
   electrode_type
-  name   CG1
-  species   CG1
+  name   P
+  species   P
   potential   0
   #piston 0.0 1
   #thomas_fermi_length 0.0
   #voronoi_volume ***
 
   electrode_type
-  name   CG2
-  species   CG2
+  name   CG1
+  species   CG1
   potential   0
   #piston 0.0 1
   #thomas_fermi_length 0.0
@@ -667,9 +674,9 @@ interactions
      lj_pair  F3   F3   0.25519999999999998        3.0732
      lj_pair  F3   F4   0.25519999999999998        3.0732
      lj_pair  F4   F4   0.25519999999999998        3.0732
+     lj_pair  P    P     0.511519   3.3425
      lj_pair  CG1  CG1   0.511519   3.3425
      lj_pair  CG2  CG2   0.511519   3.3425
-     lj_rule Mixing  
 
   damping
      tt_pair  RN1  RN1  4.6183   4    1.0000     
@@ -841,3 +848,45 @@ interactions
      tt_pair  MC8   F4 	4.7442	 4    1.0000
      tt_pair  EC6   F4 	4.8867	 4    1.0000
      tt_pair  EC7   F4 	4.7442	 4    1.0000
+     tt_pair   P      RN1      2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      RC2      2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      RN3      2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      RC4      2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      RC5      2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      MC8      2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      EC6      2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      EC7      2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      B        2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      F1       2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      F2       2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      F3       2.0000000000000000        4       1.0000000000000000
+     tt_pair   P      F4       2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    RN1      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    RC2      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    RN3      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    RC4      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    RC5      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    MC8      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    EC6      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    EC7      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    B        2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    F1       2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    F2       2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    F3       2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG1    F4       2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    RN1      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    RC2      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    RN3      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    RC4      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    RC5      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    MC8      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    EC6      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    EC7      2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    B        2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    F1       2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    F2       2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    F3       2.0000000000000000        4       1.0000000000000000
+     tt_pair   CG2    F4       2.0000000000000000        4       1.0000000000000000
+
+output
+ default 1

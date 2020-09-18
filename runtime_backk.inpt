@@ -630,8 +630,7 @@ interactions
      lj_pair  F3   F3   0.25519999999999998        3.0732
      lj_pair  F3   F4   0.25519999999999998        3.0732
      lj_pair  F4   F4   0.25519999999999998        3.0732
-     lj_rule Mixing  
- 
+   
   damping
 #    tt_pair  O   O     2.0 4 0.0
      tt_pair  RN1  RN1  4.6183   4    1.0000     

@@ -1,6 +1,13 @@
 in file il.ff: 
 * you can add fumi-tosi potential (keyword ft)
 	parameters order: B(A-1), A(kJ/mol), C6(kJ/(mol*A-6)), C8(kJ/(mol*A-8)), B, B
-* last column correspond to atomic polarizability in A3 (with lj and ft).
-	if no pol put 0.
 
+* last column correspond to atomic polarizability in A3 (with lj and ft).
+	if no polarizability put 0.0 (for ex. if hydrogen)
+        if non polarizable ff then no need to put the last column.
+
+* To use the script mw_electrodes.py :
+
+- nanoporous electrodes : use the inputs file 'porous_left_ua' and 'porous right_ua' that are carbon atoms + wall (in atomic units).
+  in elec.inpt one need to put the wall atom before the electrodes ones.
+  if there is wall molecule add +1 in the first line 

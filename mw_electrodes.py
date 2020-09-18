@@ -4,13 +4,14 @@
 # import os
 # os.system("cp data.inpt data_backk.inpt")
 # os.system("cp runtime.inpt runtime_backk.inpt")
-
+from itertools import islice
+import numpy as np
 
 name = []
 typ = []
 file = []
 count = []
-mass = []
+mass_elec = []
 width = []
 magnitude = []
 pot_typ = []
@@ -20,10 +21,11 @@ pot3 = []
 pot4 = []
 pot5 = []
 pot6 = []
-
+bohr = 0.529177
 with open('elec.inpt') as f:
     nb_elec = f.readline()
     counter = int(nb_elec)
+    elec_type = f.readline()
     for i in range(int(nb_elec)):
         temp = f.readline()
         name.append(temp.split()[0])
@@ -31,7 +33,7 @@ with open('elec.inpt') as f:
         if typ[i] == 'wall':
             counter = counter - 1
         count.append(temp.split()[2])
-        mass.append(temp.split()[3])
+        mass_elec.append(temp.split()[3])
         width.append(temp.split()[4])
         magnitude.append(temp.split()[5])
         pot_typ.append(temp.split()[6])
@@ -45,18 +47,24 @@ with open('elec.inpt') as f:
             pot4.append(float(temp.split()[10]))
             pot5.append(float(temp.split()[11]))
             pot6.append(float(temp.split()[12]))
-
-        temp = f.readline()
-        file.append(temp.split()[0])
     elec_charges = f.readline()
     neutrality = f.readline()
     compute_force = f.readline()
 
+natom_elec = 0
+natom_add = 0
+
+for i in range(int(nb_elec)):
+    if typ[i] == 'elec':
+        natom_elec += int(count[i]) 
+
+    natom_add += int(count[i])
+    
 out = open("runtime.inpt", "w")  
 lj = False
 ft = False
 species = []
-
+mass = []
 with open("runtime_backk.inpt", "r") as run:
     
     for line in run:
@@ -67,23 +75,25 @@ with open("runtime_backk.inpt", "r") as run:
 
         if (line.lstrip()).startswith("name"):
             species.append(line.split()[1])
-    print(species)        
+        if (line.lstrip()).startswith("mass"):
+            mass.append(line.split()[1])
+
     for i in range(int(nb_elec)):  
         if typ[i] == 'elec':
             out.write("  species_type\n")
             out.write("    name {0}\n".format(name[i]))
             out.write("    count {0}\n".format(count[i]))
             out.write("    charge gaussian {0}  {1}\n".format(width[i], magnitude[i]))
-            out.write("    mass {0}\n".format(mass[i]))
+            out.write("    mass {0}\n".format(mass_elec[i]))
             out.write("    mobile False\n\n")
         if typ[i] == 'wall':
             out.write("  species_type\n")
             out.write("    name {0}\n".format(name[i]))
             out.write("    count {0}\n".format(count[i]))    
             out.write("    charge point 0.0\n")
-            out.write("    mass {0}\n".format(mass[i]))
+            out.write("    mass {0}\n".format(mass_elec[i]))
             out.write("    mobile False\n\n")
-            
+                
     out.write("molecules\n")   
     for line in run:
         if (line.lstrip()).startswith("interactions"):
@@ -134,9 +144,6 @@ with open("runtime_backk.inpt", "r") as run:
                            name[i], name[i], pot1[i], pot2[i], pot3[i], pot4[i], pot5[i], pot6[i]))
 
 
-# In[45]:
-
-
 with open("runtime_backk.inpt", "r") as run:
     for line in run:
         if (line.lstrip()).startswith("lj_rule"):
@@ -149,11 +156,85 @@ with open("runtime_backk.inpt", "r") as run:
             
         if (line.lstrip()).startswith("tt_pair"):
             out.write("{0}".format(line))
-               
+    for i in range(int(nb_elec)):
+        for j in range(len(species)):
+            if float(mass[j]) > 2.0:
+               out.write("     tt_pair   {0:4s}   {1:4s}     2.0000000000000000        4"
+                        "       1.0000000000000000\n".format(name[i], species[j]))
+
+    out.write('\n')
+    out.write('output\n')
+    out.write(' default 1\n')
+
+natom = 0
+natom_tot = 0
+
+out2 = open("data.inpt", "w")
+with open("data_backk.inpt", "r") as data:
+
+    head = list(islice(data, 3))
+    for n in range(3):
+       out2.write(str(head[n]))
+    ligne = data.readline()
+    natom = int(ligne.split()[1])
+    natom_tot = natom + natom_add
+    out2.write("num_atoms                      {0}\n".format(natom_tot))
+    out2.write("num_electrode_atoms              {0}\n".format(natom_elec))
+
+    head = list(islice(data, 3))
+    for n in range(1,3):
+        out2.write(str(head[n]))
+    out2.write("  # coordinates :      {0} species - step  0\n".format(natom_tot))
+
+    atname, atx, aty, atz = np.loadtxt(data, dtype='str', unpack= True)
+    atx = atx.astype(float)
+    aty = aty.astype(float)
+    atz = atz.astype(float)
+
+    bulk_minz = np.amin(atz)
+    bulk_maxz = np.amax(atz)
 
 
-# In[ ]:
+if elec_type == 'planar\n':   
+    elec1x, elec1y, elec1z = np.loadtxt('planar_elec_ua', unpack= True)
 
+if elec_type == 'porous\n':
+    elec1x, elec1y, elec1z = np.loadtxt('porous_left_ua', unpack= True)
+    elec2x, elec2y, elec2z = np.loadtxt('porous_right_ua', unpack= True)
 
+elec_thick = (np.amax(elec1z) - np.amin(elec1z))
 
+for n in range(len(atx)):
+    atz[n] = atz[n]-bulk_minz + elec_thick + 6.0 + 1.10
+    out2.write(" {0}    {1}  {2}  {3}\n".format(atname[n], atx[n], aty[n], atz[n]))
 
+if elec_type == 'planar\n':
+   for i in range(natom_elec):
+       if i < (natom_elec/2):
+           for at in range(len(elec1x)):
+               out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[i], elec1x[at], elec1y[at], elec1z[at]+1.10))
+       else:
+           for at in range(len(elec1x)):
+               out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[i], elec1x[at], elec1y[at], elec1z[at]+elec_thick+bulk_maxz+13.10))
+
+if elec_type == 'porous\n':
+   for at in range(int(count[0])):
+       if at < int(int(count[0])/2):
+           out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[0], elec1x[at], elec1y[at], elec1z[at]+1.10))
+   for at in range(int(count[0])):
+       if at < int(count[0])/2:
+           out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[0], elec2x[at], elec2y[at], elec2z[at]+2*elec_thick+bulk_maxz+13.10))
+   print(int(count[0]), natom_elec)
+   print(len(name))
+   print(name[1])
+   for i in range(natom_elec-1):
+       if i > 0:
+           for at in range(int(count[0]),len(elec1x)):
+               print(i,at)
+               out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[i], elec1x[at], elec1y[at], elec1z[at]+1.10))
+ 
