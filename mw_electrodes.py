@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# import os
-# os.system("cp data.inpt data_backk.inpt")
-# os.system("cp runtime.inpt runtime_backk.inpt")
+import os
 from itertools import islice
 import numpy as np
+os.system("cp data.inpt data_bulk.inpt")
+os.system("cp runtime.inpt runtime_bulk.inpt")
 
 name = []
 typ = []
@@ -65,7 +65,7 @@ lj = False
 ft = False
 species = []
 mass = []
-with open("runtime_backk.inpt", "r") as run:
+with open("runtime_bulk.inpt", "r") as run:
     
     for line in run:
         if (line.lstrip()).startswith("molecules"):
@@ -144,7 +144,7 @@ with open("runtime_backk.inpt", "r") as run:
                            name[i], name[i], pot1[i], pot2[i], pot3[i], pot4[i], pot5[i], pot6[i]))
 
 
-with open("runtime_backk.inpt", "r") as run:
+with open("runtime_bulk.inpt", "r") as run:
     for line in run:
         if (line.lstrip()).startswith("lj_rule"):
             out.write("{0}".format(line))
@@ -156,10 +156,10 @@ with open("runtime_backk.inpt", "r") as run:
             
         if (line.lstrip()).startswith("tt_pair"):
             out.write("{0}".format(line))
-    for i in range(int(nb_elec)):
-        for j in range(len(species)):
-            if float(mass[j]) > 2.0:
-               out.write("     tt_pair   {0:4s}   {1:4s}     2.0000000000000000        4"
+            for i in range(int(nb_elec)):
+                for j in range(len(species)):
+                    if float(mass[j]) > 2.0:
+                        out.write("     tt_pair   {0:4s}   {1:4s}     2.0000000000000000        4"
                         "       1.0000000000000000\n".format(name[i], species[j]))
 
     out.write('\n')
@@ -170,10 +170,10 @@ natom = 0
 natom_tot = 0
 
 out2 = open("data.inpt", "w")
-with open("data_backk.inpt", "r") as data:
+with open("data_bulk.inpt", "r") as data:
 
-    head = list(islice(data, 3))
-    for n in range(3):
+    head = list(islice(data, 2))
+    for n in range(2):
        out2.write(str(head[n]))
     ligne = data.readline()
     natom = int(ligne.split()[1])
@@ -181,7 +181,7 @@ with open("data_backk.inpt", "r") as data:
     out2.write("num_atoms                      {0}\n".format(natom_tot))
     out2.write("num_electrode_atoms              {0}\n".format(natom_elec))
 
-    head = list(islice(data, 3))
+    head = list(islice(data, 4))
     for n in range(1,3):
         out2.write(str(head[n]))
     out2.write("  # coordinates :      {0} species - step  0\n".format(natom_tot))
@@ -209,15 +209,15 @@ for n in range(len(atx)):
     out2.write(" {0}    {1}  {2}  {3}\n".format(atname[n], atx[n], aty[n], atz[n]))
 
 if elec_type == 'planar\n':
-   for i in range(natom_elec):
-       if i < (natom_elec/2):
-           for at in range(len(elec1x)):
-               out2.write(" {0}    {1}  {2}  {3}\n".format(
-                      name[i], elec1x[at], elec1y[at], elec1z[at]+1.10))
+   for i in range(int(nb_elec)):
+       if i == 1:
+          for j in range(int(count[i])):
+              out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[i], elec1x[j], elec1y[j], elec1z[j]+elec_thick+bulk_maxz+13.10))
        else:
-           for at in range(len(elec1x)):
+           for j in range(int(count[i])):
                out2.write(" {0}    {1}  {2}  {3}\n".format(
-                      name[i], elec1x[at], elec1y[at], elec1z[at]+elec_thick+bulk_maxz+13.10))
+                       name[i], elec1x[j], elec1y[j], elec1z[j]+1.10))
 
 if elec_type == 'porous\n':
    for at in range(int(count[0])):
