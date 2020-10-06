@@ -190,20 +190,6 @@ species
 
   dipoles_minimization cg 1.0e-6 100
 
-  species_type
-    name CG1
-    count 1440
-    charge gaussian 0.955234657  0.00
-    mass 12.011
-    mobile False
-
-  species_type
-    name CG2
-    count 1440
-    charge gaussian 0.955234657  0.00
-    mass 12.011
-    mobile False
-
 molecules
 
   molecule_type
@@ -336,28 +322,6 @@ molecules
 	harmonic_angle B F2 F4  0.127499541   1.910611932
 	harmonic_angle B F3 F4  0.127499541   1.910611932
 
-electrodes
-
-  electrode_type
-  name   CG1
-  species   CG1
-  potential   0
-  #piston 0.0 1
-  #thomas_fermi_length 0.0
-  #voronoi_volume ***
-
-  electrode_type
-  name   CG2
-  species   CG2
-  potential   0
-  #piston 0.0 1
-  #thomas_fermi_length 0.0
-  #voronoi_volume ***
-
-  electrode_charge cg 1.0e-12 100
-  charge_neutrality false
-  compute_force true
-
 interactions
   coulomb
     coulomb_rtol       1.00000e-5
@@ -365,8 +329,7 @@ interactions
     coulomb_ktol       1.0e-5
 
   lennard-jones
-    #lj_3D_tail_correction
-     lj_rcut XXX
+     lj_rcut 24.0
      lj_pair  RN1  RN1  0.71128000000000002        3.201250
      lj_pair  RN1  RC2  0.45642051487635826        3.345740
      lj_pair  RN1  RN3  0.71128000000000002        3.201250
@@ -667,10 +630,9 @@ interactions
      lj_pair  F3   F3   0.25519999999999998        3.0732
      lj_pair  F3   F4   0.25519999999999998        3.0732
      lj_pair  F4   F4   0.25519999999999998        3.0732
-     lj_pair  CG1  CG1   0.511519   3.3425
-     lj_pair  CG2  CG2   0.511519   3.3425
-
+   
   damping
+#    tt_pair  O   O     2.0 4 0.0
      tt_pair  RN1  RN1  4.6183   4    1.0000     
      tt_pair  RN1  RC2  4.4824   4    1.0000     
      tt_pair  RN1  RN3  4.6183   4    1.0000     
@@ -840,32 +802,11 @@ interactions
      tt_pair  MC8   F4 	4.7442	 4    1.0000
      tt_pair  EC6   F4 	4.8867	 4    1.0000
      tt_pair  EC7   F4 	4.7442	 4    1.0000
-     tt_pair   CG1    RN1      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    RC2      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    RN3      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    RC4      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    RC5      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    MC8      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    EC6      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    EC7      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    B        2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    F1       2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    F2       2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    F3       2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG1    F4       2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    RN1      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    RC2      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    RN3      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    RC4      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    RC5      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    MC8      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    EC6      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    EC7      2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    B        2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    F1       2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    F2       2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    F3       2.0000000000000000        4       1.0000000000000000
-     tt_pair   CG2    F4       2.0000000000000000        4       1.0000000000000000
-
+	 
+	 
 output
- default 1
+  default 1000
+  restart 50000
+  forces  1000
+  pdb 0
+  lammps 0

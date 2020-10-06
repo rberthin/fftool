@@ -4,8 +4,8 @@
 import os
 from itertools import islice
 import numpy as np
-os.system("cp data.inpt data_bulk.inpt")
-os.system("cp runtime.inpt runtime_bulk.inpt")
+#os.system("cp data.inpt data_bulk.inpt")
+#os.system("cp runtime.inpt runtime_bulk.inpt")
 
 name = []
 typ = []
@@ -77,7 +77,7 @@ with open("runtime_bulk.inpt", "r") as run:
             species.append(line.split()[1])
         if (line.lstrip()).startswith("mass"):
             mass.append(line.split()[1])
-
+    print(len(species))
     for i in range(int(nb_elec)):  
         if typ[i] == 'elec':
             out.write("  species_type\n")
@@ -156,11 +156,11 @@ with open("runtime_bulk.inpt", "r") as run:
             
         if (line.lstrip()).startswith("tt_pair"):
             out.write("{0}".format(line))
-            for i in range(int(nb_elec)):
-                for j in range(len(species)):
-                    if float(mass[j]) > 2.0:
-                        out.write("     tt_pair   {0:4s}   {1:4s}     2.0000000000000000        4"
-                        "       1.0000000000000000\n".format(name[i], species[j]))
+    for i in range(int(nb_elec)):
+        for j in range(len(species)):
+            if float(mass[j]) > 2.0:
+                out.write("     tt_pair   {0:4s}   {1:4s}     2.0000000000000000        4"
+                       "       1.0000000000000000\n".format(name[i], species[j]))
 
     out.write('\n')
     out.write('output\n')
@@ -170,7 +170,7 @@ natom = 0
 natom_tot = 0
 
 out2 = open("data.inpt", "w")
-with open("data_bulk.inpt", "r") as data:
+with open("data_backk.inpt", "r") as data:
 
     head = list(islice(data, 2))
     for n in range(2):
