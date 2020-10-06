@@ -32,7 +32,7 @@ with open('elec.inpt') as f:
         typ.append(temp.split()[1])
         if typ[i] == 'wall':
             counter = counter - 1
-        count.append(temp.split()[2])
+        count.append(int(temp.split()[2]))
         mass_elec.append(temp.split()[3])
         width.append(temp.split()[4])
         magnitude.append(temp.split()[5])
@@ -50,7 +50,6 @@ with open('elec.inpt') as f:
     elec_charges = f.readline()
     neutrality = f.readline()
     compute_force = f.readline()
-
 natom_elec = 0
 natom_add = 0
 
@@ -77,7 +76,6 @@ with open("runtime_bulk.inpt", "r") as run:
             species.append(line.split()[1])
         if (line.lstrip()).startswith("mass"):
             mass.append(line.split()[1])
-    print(len(species))
     for i in range(int(nb_elec)):  
         if typ[i] == 'elec':
             out.write("  species_type\n")
@@ -220,21 +218,23 @@ if elec_type == 'planar\n':
                        name[i], elec1x[j], elec1y[j], elec1z[j]+1.10))
 
 if elec_type == 'porous\n':
-   for at in range(int(count[0])):
-       if at < int(int(count[0])/2):
-           out2.write(" {0}    {1}  {2}  {3}\n".format(
-                      name[0], elec1x[at], elec1y[at], elec1z[at]+1.10))
-   for at in range(int(count[0])):
-       if at < int(count[0])/2:
-           out2.write(" {0}    {1}  {2}  {3}\n".format(
-                      name[0], elec2x[at], elec2y[at], elec2z[at]+2*elec_thick+bulk_maxz+13.10))
-   print(int(count[0]), natom_elec)
-   print(len(name))
-   print(name[1])
-   for i in range(natom_elec-1):
-       if i > 0:
-           for at in range(int(count[0]),len(elec1x)):
-               print(i,at)
-               out2.write(" {0}    {1}  {2}  {3}\n".format(
-                      name[i], elec1x[at], elec1y[at], elec1z[at]+1.10))
+   for i in range(len(count)):
+       if i == 0:
+           for n in range(int(count[i]/2)):
+                   out2.write(" {0}    {1}  {2}  {3}\n".format(
+                      name[i], elec1x[n], elec1y[n], elec1z[n]+1.10))
+           for n in range(int(count[i]/2), count[i]):
+                   m = n - int(count[i]/2)
+                   out2.write(" {0}    {1}  {2}  {3}\n".format(
+                           name[i], elec2x[m], elec2y[m], elec2z[m]+elec_thick+bulk_maxz+13.10))
+
+       for n in range(count[i]):
+           m = n + int(count[0]/2)
+           if i == 1:        
+                out2.write(" {0}    {1}  {2}  {3}\n".format(
+                          name[i], elec1x[m], elec1y[m], elec1z[m]+1.10))
+           if i == 2:
+                out2.write(" {0}    {1}  {2}  {3}\n".format(
+                          name[i], elec1x[m], elec1y[m], elec1z[m]+elec_thick+bulk_maxz+13.10))
+
  
