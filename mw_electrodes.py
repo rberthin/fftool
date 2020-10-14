@@ -69,6 +69,8 @@ with open("runtime_bulk.inpt", "r") as run:
     for line in run:
         if (line.lstrip()).startswith("molecules"):
             break
+        elif(line.lstrip()).startswith("dipoles_minimization"):
+            break
         else :
             out.write("{0}".format(line))
 
@@ -91,7 +93,7 @@ with open("runtime_bulk.inpt", "r") as run:
             out.write("    charge point 0.0\n")
             out.write("    mass {0}\n".format(mass_elec[i]))
             out.write("    mobile False\n\n")
-                
+    out.write("#dipoles_minimization cg 1.0e-6 100")            
     out.write("molecules\n")   
     for line in run:
         if (line.lstrip()).startswith("interactions"):
