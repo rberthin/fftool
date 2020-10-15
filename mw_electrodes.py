@@ -170,7 +170,7 @@ natom = 0
 natom_tot = 0
 
 out2 = open("data.inpt", "w")
-with open("data_backk.inpt", "r") as data:
+with open("data_bulk.inpt", "r") as data:
 
     head = list(islice(data, 2))
     for n in range(2):
@@ -181,10 +181,15 @@ with open("data_backk.inpt", "r") as data:
     out2.write("num_atoms                      {0}\n".format(natom_tot))
     out2.write("num_electrode_atoms              {0}\n".format(natom_elec))
 
-    head = list(islice(data, 4))
-    for n in range(1,3):
-        out2.write(str(head[n]))
-    out2.write("  # coordinates :      {0} species - step  0\n".format(natom_tot))
+    ligne = data.readline()
+    ligne = data.readline()
+    out2.write(ligne)
+    ligne = data.readline()
+    boxx = float(ligne.split()[0])
+    boxy = float(ligne.split()[1])
+    boxz = float(ligne.split()[2])
+    print(boxz)
+    ligne = data.readline()
 
     atname, atx, aty, atz = np.loadtxt(data, dtype='str', unpack= True)
     atx = atx.astype(float)
@@ -193,8 +198,8 @@ with open("data_backk.inpt", "r") as data:
 
     bulk_minz = np.amin(atz)
     bulk_maxz = np.amax(atz)
-
-
+    print(bulk_maxz)
+    print(bulk_minz)
 if elec_type == 'planar\n':   
     elec1x, elec1y, elec1z = np.loadtxt('planar_elec_ua', unpack= True)
 
@@ -203,6 +208,10 @@ if elec_type == 'porous\n':
     elec2x, elec2y, elec2z = np.loadtxt('porous_right_ua', unpack= True)
 
 elec_thick = (np.amax(elec1z) - np.amin(elec1z))
+print(elec_thick)
+maxz = boxz + 13.1 + 2*elec_thick
+out2.write(" {0}    {1}    {2}\n".format(boxx, boxy, maxz))
+out2.write("  # coordinates :      {0} species - step  0\n".format(natom_tot))
 
 for n in range(len(atx)):
     atz[n] = atz[n]-bulk_minz + elec_thick + 6.0 + 1.10
