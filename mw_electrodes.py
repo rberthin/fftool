@@ -188,7 +188,6 @@ with open("data_bulk.inpt", "r") as data:
     boxx = float(ligne.split()[0])
     boxy = float(ligne.split()[1])
     boxz = float(ligne.split()[2])
-    print(boxz)
     ligne = data.readline()
 
     atname, atx, aty, atz = np.loadtxt(data, dtype='str', unpack= True)
@@ -198,8 +197,6 @@ with open("data_bulk.inpt", "r") as data:
 
     bulk_minz = np.amin(atz)
     bulk_maxz = np.amax(atz)
-    print(bulk_maxz)
-    print(bulk_minz)
 if elec_type == 'planar\n':   
     elec1x, elec1y, elec1z = np.loadtxt('planar_elec_ua', unpack= True)
 
@@ -208,13 +205,12 @@ if elec_type == 'porous\n':
     elec2x, elec2y, elec2z = np.loadtxt('porous_right_ua', unpack= True)
 
 elec_thick = (np.amax(elec1z) - np.amin(elec1z))
-print(elec_thick)
-maxz = boxz + 13.1 + 2*elec_thick
+maxz = boxz + 11.1 + 2*elec_thick
 out2.write(" {0}    {1}    {2}\n".format(boxx, boxy, maxz))
 out2.write("  # coordinates :      {0} species - step  0\n".format(natom_tot))
 
 for n in range(len(atx)):
-    atz[n] = atz[n]-bulk_minz + elec_thick + 6.0 + 1.10
+    atz[n] = atz[n]-bulk_minz + elec_thick + 5.0 + 1.10
     out2.write(" {0}    {1}  {2}  {3}\n".format(atname[n], atx[n], aty[n], atz[n]))
 
 if elec_type == 'planar\n':
@@ -222,7 +218,7 @@ if elec_type == 'planar\n':
        if i == 1:
           for j in range(int(count[i])):
               out2.write(" {0}    {1}  {2}  {3}\n".format(
-                      name[i], elec1x[j], elec1y[j], elec1z[j]+elec_thick+bulk_maxz+13.10))
+                      name[i], elec1x[j], elec1y[j], elec1z[j]+elec_thick+bulk_maxz+11.10))
        else:
            for j in range(int(count[i])):
                out2.write(" {0}    {1}  {2}  {3}\n".format(
@@ -237,7 +233,7 @@ if elec_type == 'porous\n':
            for n in range(int(count[i]/2), count[i]):
                    m = n - int(count[i]/2)
                    out2.write(" {0}    {1}  {2}  {3}\n".format(
-                           name[i], elec2x[m], elec2y[m], elec2z[m]+elec_thick+bulk_maxz+13.10))
+                           name[i], elec2x[m], elec2y[m], elec2z[m]+elec_thick+bulk_maxz+11.10))
 
        for n in range(count[i]):
            m = n + int(count[0]/2)
@@ -246,6 +242,6 @@ if elec_type == 'porous\n':
                           name[i], elec1x[m], elec1y[m], elec1z[m]+1.10))
            if i == 2:
                 out2.write(" {0}    {1}  {2}  {3}\n".format(
-                          name[i], elec1x[m], elec1y[m], elec1z[m]+elec_thick+bulk_maxz+13.10))
+                          name[i], elec1x[m], elec1y[m], elec1z[m]+elec_thick+bulk_maxz+11.10))
 
  
